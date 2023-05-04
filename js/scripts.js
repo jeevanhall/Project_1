@@ -16,6 +16,55 @@
 
 // Data structure containing all product data displayed on the webpage
 (() => {
+
+
+//today's class
+const CART = [];
+// 2. add products 
+// 2.1 update cart with new products
+
+function addProduct() {
+    console.log("ADD PRODUCT !!!");
+
+   const productE = $(this);
+   console.log(productE.data('product-id'));
+
+
+    // get the product id
+    const productId = $(this).data('product-id');
+    //add the product id to the cart array
+    CART.push(productId);
+    // update cart total
+    
+    console.log(CART);
+
+}
+
+  // 3. show products in cart
+//today's class
+function showCart() {
+    
+    // $("products-cart").empty();
+     $("#products-cart").empty();
+ 
+     for(const productId of CART) {
+         const productHTML = getProductHTML(productId);
+ 
+         //$("products-cart").append(productHTML);
+         $("#products-cart").append(productHTML);
+ 
+     }
+ }
+
+
+
+
+
+
+
+
+
+
     const PRODUCTS = {
         product_1: {
             id: "product_1",
@@ -98,6 +147,14 @@
             const newStartHTML = starHTML.clone();
             productHTML.find(".product-reviews").append(newStartHTML);
         }
+
+         // Customize the product's "Add to cart" button
+         productHTML
+         .find(".product-action")
+         .text("Add to cart")
+         //today's class
+         .data("productId", product.id)
+         .on("click",addProduct);
     
         // Remove .d-none to make the product visible
         productHTML.removeClass("d-none");
@@ -151,12 +208,17 @@
     
         // 5. register the search function so it is executed when the user keys in a query
     
-        
+     $(document).ready(function () {    
     
     $('#searchQuery').on('keyup', search);
         
     
     showProducts(Object.values(PRODUCTS));
+
+    $("#show-cart").on("click", showCart);
+    
+    });
+
     }) ();
     
     
