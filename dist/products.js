@@ -208,20 +208,31 @@ function showCart() {
     
         // 5. register the search function so it is executed when the user keys in a query
     
-     $(document).ready(function () {    
+//      $(document).ready(function () {    
     
-    $('#searchQuery').on('keyup', search);
+//     $('#searchQuery').on('keyup', search);
         
     
+//     showProducts(Object.values(PRODUCTS));
+
+//     $("#show-cart").on("click", showCart);
+    
+//     });
+
+// }) ();
+    
+    $(document).ready(function () {
+    /*
+    Use Object.values() to generate an array of products that
+    facilitates the handling the products data
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
+    */
+    $('#searchQuery').on('keyup', search);
     showProducts(Object.values(PRODUCTS));
 
     $("#show-cart").on("click", showCart);
-    
     });
-
-    }) ();
-    
-    
+})();
     
     
     

@@ -1,0 +1,28 @@
+{
+  "name": "project_1",
+  "version": "1.0.0",
+  "description": "[Link to WebSite Project 1](https://jeevanhall.github.io/Project_1/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeevanhall/Project_1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeevanhall/Project_1/issues"
+  },
+  "homepage": "https://github.com/jeevanhall/Project_1#readme",
+  "devDependencies": {
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.0.2"
+  },
+  "dependencies": {
+    "firebase": "^9.21.0"
+  }
+}
