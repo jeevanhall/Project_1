@@ -1,243 +1,234 @@
-/*!
- * Start Bootstrap - Business Casual v7.0.8 (https://startbootstrap.com/theme/business-casual)
- * Copyright 2013-2022 Start Bootstrap
- * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-business-casual/blob/master/LICENSE)
- */
-// Highlights current date on contact page
-// window.addEventListener('DOMContentLoaded', event => {
-//     const listHoursArray = document.body.querySelectorAll('.list-hours li');
-//     listHoursArray[new Date().getDay()].classList.add(('today'));
-// })
-
 /*********************************************************************
  *                          Maori Fine Crafts Site                   *
  * CIS 5620: Authoring Websites                                      *
  *********************************************************************/
 
-// Data structure containing all product data displayed on the webpage
-(() => {
-
-  //today's class
-  const CART = [];
-
-  const PRODUCTS = {
-    product_1: {
-      id: "product_1",
-      name: "Hand Grinder",
-      description: "Hand-carved traditional Maori style bone Koru pendant",
-      price: 50,
-      stars: 1,
-      image: "assets/img/handgrinder.jpg",
-    },
-    product_2: {
-      id: "product_2",
-      name: "Hario V 60",
-      description:
-        "Maori model war canoe of carved wood, with a raised stern and a prow in the shape of a human head",
-      price: 200,
-      stars: 5,
-      image: "assets/img/hariov60.jpg",
-    },
-    product_3: {
-      id: "product_3",
-      name: "AeroPress",
-      description: "Vintage prominent Maori Tekoteko warrior figure",
-      price: 30,
-      stars: 4,
-      image: "assets/img/aeropress.jpg",
-    },
-    product_4: {
-      id: "product_4",
-      name: "Chemex Pour Over",
-      description:
-        "This fine Maori work is a handcrafted piece of brassware considered highly attractive and artistic",
-      price: 150,
-      stars: 2,
-      image: "assets/img/chemex.jpg",
-    },
-    product_5: {
-      id: "product_5",
-      name: "Indonesia Bies Penantan",
-      description:
-        "Approximately 15 to 17 Abalone 15x25 mm beads on a 15-inch strand",
-      price: 50,
-      stars: 3,
-      image: "assets/img/indonesia.jpg",
-    },
-    product_6: {
-      id: "product_6",
-      name: "Passenger Coffee",
-      description:
-        "Approximately 15 to 17 Abalone 15x25 mm beads on a 15-inch strand",
-      price: 50,
-      stars: 3,
-      image: "assets/img/passenger.jpg",
-    },
-  };
+/* 
+  Avoid creating global variables by implementing all the application
+  inside an Immediately Invoked Function Expression (IIFE).
+*/
+((window) => {
+  /* An array representing products added to the cart. Each item in this array is a number representing the
+ product's id in the PRODUCTS object */
+  CART = [];
 
   /**
-       Generates the HTML for displaying one product given its id in the
-       PRODUCTS object. This function follows a clone-find-update approach:
-       1. CLONE an HTML element to use as a template
-       2. FIND the elements using selectors
-       3. UPDATE the elements to customize their content
-    
-       @param    {number} productId An identifier in the PRODUCTS object to display
-    
-       @returns  {string} A string with the HTML of the product.
-    */
+     Generates the HTML for displaying one product given its id in the
+     PRODUCTS object. This function follows a clone-find-update approach:
+     1. CLONE an HTML element to use as a template
+     2. FIND the elements using selectors
+     3. UPDATE the elements to customize their content
+ 
+     @param    {number} productId An identifier in the PRODUCTS object to display
+ 
+     @returns  {string} A string with the HTML of the product.
+ */
   function getProductHTML(productId) {
-    // Obtain product data from the PRODUCTS object
-    const product = PRODUCTS[productId];
+      // Obtain product data from the PRODUCTS object
+      const product = PRODUCTS.find(product => product.id == productId);
 
-    // CLONE an HTML element to use as a template
-    const productHTML = $("#product-template").clone();
+      // CLONE an HTML element to use as a template
+      const productHTML = $("#product-template").clone();
 
-    // Delete id to avoid duplicates
-    productHTML.prop("id", "");
+      // Delete id to avoid duplicates
+      productHTML.prop('id', '');
 
-    // FIND and UPDATE the product's name
-    productHTML.find(".product-name").text(product.name);
-    productHTML.find(".product-price").text(product.price.toFixed(2));
+      // FIND and UPDATE the product's name
+      /* Since we are updating the same object several times, 
+      we can use jQuery's chaining feature. */
+      productHTML
+          .find(".product-name")
+          .text(product.name);
 
-    // FIND and UPDATE the product's image properties
-    productHTML
-      .find("img")
-      .prop("src", product.image)
-      .prop("alt", product.name);
+      // FIND and UPDATE the product's price
+      productHTML
+          .find(".product-price")
+          .text(product.price.toFixed(2));
 
-    // Customize the product's reviews
-    const starHTML = productHTML.find(".product-reviews").find("div");
-    for (let starsCounter = 2; starsCounter <= product.stars; starsCounter++) {
-      const newStartHTML = starHTML.clone();
-      productHTML.find(".product-reviews").append(newStartHTML);
-    }
+      // FIND and UPDATE the product's image properties
+      productHTML
+          .find("img")
+          .prop("src", product.image)
+          .prop("alt", product.name);
 
-    // Customize the product's "Add to cart" button
-    productHTML
-      .find(".product-action")
-      .text("Add to cart")
-      //today's class
-    //   .data("productId", product.id)
-    //   .on("click", addProduct);
+      // Customize the product's reviews    
+      const starHTML = productHTML.find(".product-reviews").find("div");
+      for (let starsCounter = 2; starsCounter <= product.stars; starsCounter++) {
+          const newStartHTML = starHTML.clone();
+          productHTML
+              .find(".product-reviews")
+              .append(newStartHTML);
+      }
 
-    // Remove .d-none to make the product visible
-    productHTML.removeClass("d-none");
+      // Customize the product's "Add to cart" button
+      productHTML
+          .find(".product-action")
+          .text("Add to cart");
 
-    return productHTML;
+      // Remove .d-none to make the product visible
+      productHTML.removeClass("d-none");
+
+      return productHTML;
   }
 
   /**
-        Show all products in the application's homepage
-    
-        @returns  No value.
-    */
-  function showProducts(products) {
-    // Traverse the products object
-    for (let product of products) {
-      // Generate each product's HTML
-      const productHTML = getProductHTML(product.id);
-      productHTML
-        .find(".product-action")
-        .text("Add to cart")
-        .on("click", addProduct).
-        // Add this data property to identify the product when it is added to the cart
-        data("product-id", product.id);
-      $("#products").append(productHTML);
-    }
+      Show all products in the application's homepage
+  
+      @param    {array} products An array of objects containing all the products to be displayed
+      @returns  No value.
+  */
+  window.showProducts = function (products) {
+      // Sort products by the number of stars in descending order
+      // Array.prototype.sort()
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+      products.sort((product1, product2) => product2.stars - product1.stars);
+
+      // Traverse the products array
+      for (let product of products) {
+          const productHTML = getProductHTML(product.id);
+
+          /* Customize the product's "Add to cart" button
+             Since we are updating the same object several times, 
+             we can use jQuery's chaining feature. 
+          */
+          productHTML
+              .find(".product-action")
+              .text("Add to cart")
+              .on("click", addProduct).
+              // Add this data property to identify the product when it is added to the cart
+              data("product-id", product.id);
+
+          /* Finally, append the cutomized HTML for each product to the products
+             container on the webpage */
+          $('#products').append(productHTML);
+      }
   }
-
-
-  // 2. add products
-  // 2.1 update cart with new products
-
+   
+  /**
+      Add a product to the shopping cart
+  
+      @returns  No value.
+  */
   function addProduct() {
-    console.log("ADD PRODUCT !!!");
+      // Use data property added in the showProducts function to identify the product
+      const productId = $(this).data("product-id");
 
-    const productE = $(this);
-    console.log(productE.data("product-id"));
+      CART.push(productId);
 
-    // get the product id
-    const productId = $(this).data("product-id");
-    //add the product id to the cart array
-    CART.push(productId);
-    // update cart total
-    updateCartTotal();
-
-    console.log(CART);
+      updateCartTotal();
   }
+
+  /**
+      Removes a product from the shopping cart
+  
+      @returns  No value.
+  */
   function removeProduct() {
-    // Use data property added in the showCart function to identify the product
-    console.log("enterd into remove PRODUCT !!!");
-    console.log("cart count before calling the remove product", CART.length);
+      // Use data property added in the showCart function to identify the product
+      const productCartIndex = $(this).data("product-cart-index");
 
-    const productCartIndex = $(this).data("product-cart-index");
-    console.log("indextoremoveproductCartIndex", productCartIndex);
+      CART.splice(productCartIndex, 1);
 
+      updateCartTotal();
 
-    CART.splice(productCartIndex, 1);
-
-
-    updateCartTotal();
-
-    console.log("leaving from remove PRODUCT !!!");
-    console.log("cart count after calling the remove product", CART.length);
-
-    // Use data property added in the showCart function to identify and remove the product
-    $("#product-cart-index-" + productCartIndex).fadeOut(
-      "fast",
-      // After the product fades out, display the entire cart again.
-      showCart
-    );
-  }
-  function updateCartTotal() {
-    // Update number of items
-    $("#cart-total").text(CART.length);
-
-    /* Switch the cart icon at the top of the webpage to reflect the cart status:
-       empty or not empty. */
-    if (CART.length == 0) {
-      $("#show-cart")
-        .find("i")
-        .removeClass("bi-cart-fill")
-        .addClass("bi-cart2");
-    } else {
-      $("#show-cart")
-        .find("i")
-        .removeClass("bi-cart2")
-        .addClass("bi-cart-fill");
-    }
+      // Use data property added in the showCart function to identify and remove the product
+      $("#product-cart-index-" + productCartIndex).fadeOut(
+          "fast",
+          // After the product fades out, display the entire cart again. 
+          showCart);
   }
 
-  // 3. show products in cart
-  //today's class
+  /**
+      Displays the shopping cart
+  
+      @returns  No value.
+  */
   function showCart() {
-    // $("products-cart").empty();
-    $("#products-cart").empty();
+      // Empty the cart every time it is displayed  
+      $("#products-cart").empty();
 
-    for (let i = 0; i < CART.length; i++) {
-        const productHTML = getProductHTML(CART[i]);
-        console.log("i:", i);
-        console.log("cart of i :", CART[i]);
-  
-        productHTML.prop("id", "product-cart-index-" + i);
-  
-        // Customize the product's "Add to cart" button
-        productHTML
-          .find(".product-action")
-          .text("Remove")
-          //today's class
-          .data("product-cart-index", i)
-          .on("click", removeProduct);
-  
-        // Remove .d-none to make the product visible
-        //productHTML.removeClass("d-none");
-  
-        //$("products-cart").append(productHTML);
-        $("#products-cart").append(productHTML);
+      // Traverse the CART array to access all products in the cart
+      for (let i = 0; i < CART.length; i++) {
+
+          // Generate each product's HTML
+          const productHTML = getProductHTML(CART[i]);
+
+          /* Add an id to the product's root HTML element to facilitate its removal
+           when the users removes this product from the cart */
+          productHTML.prop('id', "product-cart-index-" + i);
+
+          // Customize the product's "Remove" button
+          productHTML
+              .find(".product-action")
+              .text("Remove")
+              .on("click", removeProduct).
+              // Add this data property to identify the product when it is removed from the cart
+              data("product-cart-index", i);
+
+          // Display product images in the cart smaller (50% of their original size)
+          productHTML
+              .find(".card-img-top")
+              .addClass("w-50");
+
+          /* Finally, append the cutomized HTML for each product to the cart
+             container on the webpage */
+          $("#products-cart").append(productHTML);
+      }
+
+      // Display empty cart message depending on number of items in the cart
+      if (CART.length == 0) {
+          $("#empty-cart").fadeIn();
+      } else {
+          $("#empty-cart").fadeOut();
       }
   }
 
+  /**
+      Update the number of items in the cart shown at the top of the webpage
+  
+      @returns  No value.
+  */
+  function updateCartTotal() {
+      // Update number of items
+      $("#cart-total").text(CART.length);
+
+      /* Switch the cart icon at the top of the webpage to reflect the cart status:
+         empty or not empty. */
+      if (CART.length == 0) {
+          $("#show-cart").find("i").removeClass("bi-cart-fill").addClass("bi-cart2");
+      } else {
+          $("#show-cart").find("i").removeClass("bi-cart2").addClass("bi-cart-fill");
+      }
+  }
+
+  /**
+      Filters the products displayed on the main web page according to the user-entered query on
+      the search bar
+  
+      @returns  No value.
+  */
+  // function search() {
+  //     $("#products").empty();
+
+  //     const query = $("#searchQuery").val().toLowerCase().trim();
+  //     let results = [];
+
+  //     if (query.length > 0) {
+  //         for (let productId in PRODUCTS) {
+  //             const product = PRODUCTS.find(product => product.id == productId);
+
+  //             if (product.name.toLowerCase().includes(query)
+  //                 || product.description.toLowerCase().includes(query)) {
+
+  //                 results.push(product);
+  //             }
+  //         }
+  //     } else {
+  //         results = PRODUCTS;
+  //     }
+
+  //     showProducts(results);
+  // }
   function search() {
     //  1. create a new search results object(will be empty in the beginning)
     const results = [];
@@ -265,29 +256,34 @@
     showProducts(results);
   }
 
-  // 5. register the search function so it is executed when the user keys in a query
+  async function submitCart(event) {
+      /* event.preventDefault()
+          https://api.jquery.com/event.preventdefault/ 
+      */
+      event.preventDefault();
 
-  //      $(document).ready(function () {
+      const success = await addCartItems();
 
-  //     $('#searchQuery').on('keyup', search);
+      if(success) {
+          $('#feedbackModal').modal('hide');
+      
+          CART = [];
+          updateCartTotal();
+      }
+  }
 
-  //     showProducts(Object.values(PRODUCTS));
+  /* .ready(): https://api.jquery.com/ready/
+      The .ready() method allow us to run JavaScript code as soon as the page's Document Object Model (DOM)
+      becomes SAFE to manipulate. 
+  */
+  $(document).ready(function () {        
+      // Register event handler for updating the cart when the user clicks the "Cart" button
+      $("#show-cart").on("click", showCart);
 
-  //     $("#show-cart").on("click", showCart);
+      // Register event handler for live search when the user types something on the "search" input
+      $("#searchQuery").on("keyup", search);        
 
-  //     });
-
-  // }) ();
-
-  $(document).ready(function () {
-    /*
-    Use Object.values() to generate an array of products that
-    facilitates the handling the products data
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
-    */
-    $("#searchQuery").on("keyup", search);
-    showProducts(Object.values(PRODUCTS));
-
-    $("#show-cart").on("click", showCart);
+      // Register event handler for submitting cart
+      $("#submitButton").on("click", submitCart);        
   });
-})();
+})(window);
