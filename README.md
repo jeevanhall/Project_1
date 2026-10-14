@@ -1,2 +1,1 @@
-# Project_1
-[Link to WebSite Project 1](https://jeevanhall.github.io/Project_1/index.html)
+[Project 1 Source File](https://github.com/jeevanhall/Project_1/blob/main/src/index.html)
